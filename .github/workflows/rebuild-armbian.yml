@@ -73,6 +73,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.ccache
+          key: ccache-rebuild-${{ github.sha }}
+          restore-keys: ccache-
+
       - name: Initialization environment
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -140,6 +148,7 @@ jobs:
             Default password: 1234
             Install to EMMC command: armbian-install
             Update command: armbian-update
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
