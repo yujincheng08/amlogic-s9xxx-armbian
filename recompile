@@ -348,10 +348,10 @@ compile_kernel() {
     echo -e "${INFO} CC: [ ${CC} ]"
     echo -e "${INFO} LD: [ ${LD} ]"
     # Set generic make string
-    MAKE_SET_STRING=" ARCH=${ARCH} CC='${CC}' LD=${LD} CROSS_COMPILE=${CROSS_COMPILE} LLVM=1 LLVM_IAS=1 LOCALVERSION=${LOCALVERSION} "
+    MAKE_SET_STRING=" ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} LLVM=1 LLVM_IAS=1 LOCALVERSION=${LOCALVERSION} "
 
     # Make clean/mrproper
-    make ${MAKE_SET_STRING} clean
+    make CC="${CC}" LD=${LD} ${MAKE_SET_STRING} clean
 
     # Make menuconfig
     #make ${MAKE_SET_STRING} menuconfig
@@ -385,7 +385,7 @@ compile_kernel() {
     echo -e "${STEPS} Start compilation kernel [ ${local_kernel_path} ]..."
     PROCESS="$(cat /proc/cpuinfo | grep "processor" | wc -l)"
     [[ -z "${PROCESS}" ]] && PROCESS="1" && echo "PROCESS: 1"
-    make ${MAKE_SET_STRING} Image modules dtbs -j${PROCESS}
+    make CC="${CC}" LD=${LD} ${MAKE_SET_STRING} Image modules dtbs -j${PROCESS}
     [[ "${?}" -eq "0" ]] && echo -e "${SUCCESS} The kernel is compiled successfully."
 
     # Install modules
