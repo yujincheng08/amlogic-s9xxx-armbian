@@ -154,3 +154,9 @@ jobs:
             Install command: armbian-install
             Update command: armbian-update
             Edition: ${{ env.ARMBIAN_DESKTOP_OPT }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
+        with:
+          name: ${{ env.ARMBIAN_RELEASE }}_${{ env.PACKAGED_OUTPUTDATE }}
+          path: ${{ env.PACKAGED_OUTPUTPATH }}/*

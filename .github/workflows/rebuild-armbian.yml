@@ -140,3 +140,9 @@ jobs:
             Default password: 1234
             Install to EMMC command: armbian-install
             Update command: armbian-update
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
+        with:
+          name: Armbian_Aml${{ env.ARMBIAN_RELEASE }}${{ env.PACKAGED_OUTPUTDATE }}
+          path: ${{ env.PACKAGED_OUTPUTPATH }}/*

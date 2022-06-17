@@ -87,3 +87,9 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           body: |
             The kernel can be used to compile Armbian and OpenWrt.
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
+        with:
+          name: kernel_${{ env.PACKAGED_OUTPUTTAGS }}
+          path: ${{ env.PACKAGED_OUTPUTPATH }}/*
