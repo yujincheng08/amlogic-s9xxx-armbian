@@ -137,7 +137,7 @@ jobs:
 
       - name: Upload Armbian image to Release
         uses: ncipollo/release-action@main
-        if: env.PACKAGED_STATUS == 'success' && !cancelled() && steps.init_var.outputs.has_token
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && steps.init_var.outputs.has_token == 'true'
         with:
           tag: Armbian_Aml${{ env.ARMBIAN_RELEASE }}${{ env.PACKAGED_OUTPUTDATE }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
@@ -153,7 +153,7 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: env.PACKAGED_STATUS == 'success' && !cancelled() && !steps.init_var.outputs.has_token
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && steps.init_var.outputs.has_token == 'false'
         with:
           name: Armbian_Aml${{ env.ARMBIAN_RELEASE }}${{ env.PACKAGED_OUTPUTDATE }}
           path: ${{ env.PACKAGED_OUTPUTPATH }}/*
