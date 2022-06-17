@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload Armbian image to Release
         uses: ncipollo/release-action@main
-        if: env.PACKAGED_STATUS == 'success' && !cancelled()
+        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN != '' }}
         with:
           tag: ${{ env.ARMBIAN_RELEASE }}_${{ env.PACKAGED_OUTPUTDATE }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
