@@ -275,15 +275,16 @@ env_check() {
 compile_kernel() {
     cd ${kernel_path}/${local_kernel_path}
     echo -e "${STEPS} Set compilation parameters."
-
+    ccache -o hash_dir=false
+    ccache -o compiler_check='%compiler% -dumpmachine; %compiler% -dumpversion'
     # Set compilation parameters
     export ARCH="arm64"
     export LOCALVERSION="${custom_name}"
     if [[ "${host_release}" == "jammy" ]]; then
-        export CC="clang"
+        export CC="ccache clang"
         export LD="ld.lld"
     else
-        export CC="${toolchain_path}/${clang_file//.tar.xz/}/bin/clang"
+        export CC="ccache ${toolchain_path}/${clang_file//.tar.xz/}/bin/clang"
         export LD="${toolchain_path}/${clang_file//.tar.xz/}/bin/ld.lld"
         #
         # Add $PATH variable
@@ -305,7 +306,7 @@ compile_kernel() {
     echo -e "${INFO} CC: [ ${CC} ]"
     echo -e "${INFO} LD: [ ${LD} ]"
     # Set generic make string
-    MAKE_SET_STRING=" ARCH=${ARCH} CC=${CC} LD=${LD} LLVM=1 LLVM_IAS=1 LOCALVERSION=${LOCALVERSION} "
+    MAKE_SET_STRING=" ARCH=${ARCH} CC=\"${CC}\" LD=${LD} LLVM=1 LLVM_IAS=1 LOCALVERSION=${LOCALVERSION} "
 
     # Make clean/mrproper
     make ${MAKE_SET_STRING} clean
