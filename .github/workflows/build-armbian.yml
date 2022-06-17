@@ -122,6 +122,7 @@ jobs:
           restore-keys: ccache-
 
       - name: Initialization environment
+        id: init_var
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
@@ -173,6 +174,7 @@ jobs:
           set_armbian_sign="${{ github.event.inputs.armbian_sign }}"
           [[ -z "${set_armbian_sign}" ]] && set_armbian_sign="_${edition_name}"
           echo "ARMBIAN_CUSTOM_NAME=${set_armbian_sign}" >> $GITHUB_ENV
+          echo "::set-output name=has_token::${{ secrets.GH_TOKEN != '' }}"
 
       - name: Download source code
         id: down
@@ -204,7 +206,7 @@ jobs:
 
       - name: Upload Armbian image to Release
         uses: ncipollo/release-action@main
-        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN != '' }}
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && steps.init_var.outputs.has_token
         with:
           tag: Armbian_Aml_${{ env.ARMBIAN_RELEASE }}_${{ env.ARMBIAN_DESKTOP_OPT }}_${{ env.PACKAGED_OUTPUTDATE }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
@@ -221,7 +223,7 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && !steps.init_var.outputs.has_token
         with:
           name: Armbian_Aml_${{ env.ARMBIAN_RELEASE }}_${{ env.ARMBIAN_DESKTOP_OPT }}_${{ env.PACKAGED_OUTPUTDATE }}
           path: ${{ env.PACKAGED_OUTPUTPATH }}/*

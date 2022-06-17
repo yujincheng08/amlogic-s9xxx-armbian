@@ -82,6 +82,7 @@ jobs:
           restore-keys: ccache-
 
       - name: Initialization environment
+        id: init_var
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
@@ -122,6 +123,7 @@ jobs:
               let i++
           done
           echo "ARMBIAN_RELEASE=${set_release}" >> $GITHUB_ENV
+          echo "::set-output name=has_token::${{ secrets.GH_TOKEN != '' }}"
 
       - name: Rebuild Armbian for Amlogic s9xxx
         uses: ophub/amlogic-s9xxx-armbian@main
@@ -135,7 +137,7 @@ jobs:
 
       - name: Upload Armbian image to Release
         uses: ncipollo/release-action@main
-        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN != '' }}
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && steps.init_var.outputs.has_token
         with:
           tag: Armbian_Aml${{ env.ARMBIAN_RELEASE }}${{ env.PACKAGED_OUTPUTDATE }}
           artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
@@ -151,7 +153,7 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ env.PACKAGED_STATUS == 'success' && !cancelled() && secrets.GH_TOKEN == '' }}
+        if: env.PACKAGED_STATUS == 'success' && !cancelled() && !steps.init_var.outputs.has_token
         with:
           name: Armbian_Aml${{ env.ARMBIAN_RELEASE }}${{ env.PACKAGED_OUTPUTDATE }}
           path: ${{ env.PACKAGED_OUTPUTPATH }}/*
