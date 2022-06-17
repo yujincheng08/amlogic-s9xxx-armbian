@@ -126,7 +126,7 @@ jobs:
           echo "::set-output name=has_token::${{ secrets.GH_TOKEN != '' }}"
 
       - name: Rebuild Armbian for Amlogic s9xxx
-        uses: ophub/amlogic-s9xxx-armbian@main
+        uses: ./
         if: env.ARMBIAN_URL != '' && !cancelled()
         with:
           armbian_path: ${{ env.ARMBIAN_URL }}

@@ -192,7 +192,7 @@ jobs:
           echo "::set-output name=status::success"
 
       - name: Rebuild Armbian for Amlogic s9xxx
-        uses: ophub/amlogic-s9xxx-armbian@main
+        uses: ./
         if: steps.compile.outputs.status == 'success' && !cancelled()
         with:
           build_target: armbian
