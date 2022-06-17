@@ -281,10 +281,10 @@ compile_kernel() {
     export ARCH="arm64"
     export LOCALVERSION="${custom_name}"
     if [[ "${host_release}" == "jammy" ]]; then
-        export CC="ccache clang"
+        export CC="clang"
         export LD="ld.lld"
     else
-        export CC="ccache ${toolchain_path}/${clang_file//.tar.xz/}/bin/clang"
+        export CC="${toolchain_path}/${clang_file//.tar.xz/}/bin/clang"
         export LD="${toolchain_path}/${clang_file//.tar.xz/}/bin/ld.lld"
         #
         # Add $PATH variable
@@ -338,6 +338,9 @@ compile_kernel() {
     else
         scripts/config -d LTO_CLANG_THIN
     fi
+    make ${MAKE_SET_STRING} syncconfig
+
+    export CC="ccache ${CC}"
 
     # Make kernel
     echo -e "${STEPS} Start compilation kernel [ ${local_kernel_path} ]..."
