@@ -78,7 +78,7 @@ jobs:
           echo "::set-output name=has_token::${{ secrets.GH_TOKEN != '' }}"
 
       - name: Compile the kernel for Amlogic s9xxx
-        uses: ophub/amlogic-s9xxx-armbian@main
+        uses: ${{ github.repository }}@${{ github.ref_name }}
         with:
           build_target: kernel
           kernel_repo: ${{ github.event.inputs.kernel_repo }}
