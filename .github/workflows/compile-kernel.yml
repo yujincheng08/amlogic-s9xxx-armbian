@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.ccache
+            ~/.cache/ccache
           key: kernel-${{ github.sha }}
           restore-keys: kernel-
 

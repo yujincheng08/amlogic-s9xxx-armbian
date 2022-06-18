@@ -87,7 +87,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.ccache
+            ~/.cache/ccache
           key: ccache-resbuild-${{ github.sha }}
           restore-keys: ccache-
 
